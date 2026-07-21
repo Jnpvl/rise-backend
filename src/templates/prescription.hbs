@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Receta Médica</title>
+    <style>
+        @page {
+            size: A4 portrait;
+            margin: 12mm;
+        }
+
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Times New Roman', serif;
+            font-size: 11pt;
+            background: #fff;
+            color: #000;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0.05;
+            width: 400px;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .prescription-container {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-bottom: 2px solid #E540AE;
+            padding-bottom: 12px;
+        }
+
+        .logo {
+            height: 120px;
+            width: auto;
+        }
+
+        .clinic-info {
+            text-align: center;
+        }
+
+        .clinic-name {
+            font-size: 20pt;
+            font-weight: bold;
+            color: #E540AE;
+            text-transform: uppercase;
+        }
+
+        .clinic-subtitle {
+            font-size: 13pt;
+            color: #B0307E;
+            margin-top: 4px;
+        }
+
+        .clinic-contact {
+            font-size: 10pt;
+            color: #64748b;
+            margin-top: 6px;
+            line-height: 1.4;
+        }
+
+        .info-section {
+            border-left: 4px solid #E540AE;
+            padding: 12px;
+            margin-bottom: 14px;
+        }
+
+        .section-title {
+            font-size: 10pt;
+            font-weight: bold;
+            color: #E540AE;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        .field-label {
+            font-size: 9pt;
+            font-weight: bold;
+            color: #374151;
+            text-transform: uppercase;
+        }
+
+        .field-value {
+            font-size: 11pt;
+            border-bottom: 1px dotted #cbd5e1;
+            padding-bottom: 2px;
+            margin-bottom: 8px;
+            min-height: 16px;
+        }
+
+        .instructions {
+            border-left: 4px solid #E540AE;
+            padding: 12px;
+            margin-bottom: 14px;
+        }
+
+        .instructions-title {
+            font-size: 10pt;
+            font-weight: bold;
+            color: #B0307E;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+        }
+
+        .instructions-text {
+            font-size: 11pt;
+            color: #78350f;
+            line-height: 1.5;
+        }
+
+        .medication-list {
+            margin-bottom: 16px;
+        }
+
+        .medication-item {
+            margin-bottom: 10px;
+            padding: 8px;
+            border-left: 3px solid #E540AE;
+        }
+
+        .medication-item strong {
+            color: #E540AE;
+        }
+
+        .footer {
+            margin-top: auto;
+            padding-top: 5px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 9pt;
+        }
+
+        .signature-section {
+            text-align: center;
+            min-width: 200px;
+        }
+
+        .signature-line {
+            border-top: 1px solid #E540AE;
+            height: 5px;
+        }
+
+        .date-field {
+            border-bottom: 1px solid #E540AE;
+            padding-bottom: 2px;
+            min-width: 120px;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="prescription-container">
+        <!-- Encabezado -->
+        <div class="header">
+            <div class="clinic-info">
+                <div class="clinic-name">RISE</div>
+                <div class="clinic-subtitle">Servicios Médicos</div>
+                <div class="clinic-contact">
+                    Dirección:Juarez 177, Constitución<br />
+                    Tel: (662) 3533813 
+                </div>
+            </div>
+        </div>
+
+        <!-- Contenido -->
+        <div class="content">
+            <!-- Información del paciente -->
+            <div class="info-section">
+                <div class="section-title">Información del Paciente</div>
+                <div class="field-label">Nombre</div>
+                <div class="field-value">{{patientName}}</div>
+            </div>
+
+            {{#if diagnosis}}
+            <div class="info-section">
+                <div class="section-title">Diagnóstico</div>
+                <div class="field-value">{{diagnosis}}</div>
+            </div>
+            {{/if}}
+
+            {{#if generalInstructions}}
+            <div class="instructions">
+                <div class="instructions-title">Indicaciones Generales</div>
+                <div class="instructions-text">{{generalInstructions}}</div>
+            </div>
+            {{/if}}
+
+            {{#if requestStudies}}
+            <div class="info-section">
+                <div class="section-title">Estudios Solicitados</div>
+                <div class="field-value">{{requestStudies}}</div>
+            </div>
+            {{/if}}
+
+            {{#if prescribedMedications.length}}
+            <div class="info-section medication-list">
+                <div class="section-title">Medicamentos Prescritos</div>
+                {{#each prescribedMedications}}
+                <div class="medication-item">
+                    <strong>{{name}}</strong><br />
+                    Dosis: {{dose}} &nbsp;&nbsp;|&nbsp;&nbsp; Frecuencia: {{frequency}} &nbsp;&nbsp;|&nbsp;&nbsp;
+                    Duración: {{duration}}
+                </div>
+                {{/each}}
+            </div>
+            {{else}}
+            <div style="text-align: center; color: #6b7280; font-style: italic; margin-top: 8px;">
+                No se han prescrito medicamentos
+            </div>
+            {{/if}}
+
+            {{#if nextAppointment}}
+            <div class="info-section">
+                <div class="section-title">Próxima Cita</div>
+                <div class="field-value">{{nextAppointment}}</div>
+            </div>
+            {{/if}}
+        </div>
+
+        <!-- Pie de página -->
+        <div class="footer">
+            <div><strong>Fecha:</strong> <span class="date-field">{{currentDate}}</span></div>
+            <div class="signature-section">
+                <div class="signature-line"></div>
+                <div style="margin-top: 2px;">
+                    <div style="font-size: 10pt;"><strong>{{staffName}}</strong></div>
+                    <div style="font-size: 9pt;">Cédula: {{staffCedula}}</div>
+                    <div style="font-size: 9pt;">Firma del Médico</div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</body>
+
+</html>

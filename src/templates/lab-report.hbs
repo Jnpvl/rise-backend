@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Resultados de laboratorio</title>
+  <style>
+    @page {
+      size: A4 portrait;
+      margin: 12mm;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 10pt;
+      color: #15202b;
+      line-height: 1.4;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 2px solid #E540AE;
+      padding-bottom: 10px;
+      margin-bottom: 14px;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo {
+      height: 56px;
+      width: auto;
+    }
+
+    .clinic-name {
+      font-size: 15pt;
+      font-weight: 700;
+      color: #E540AE;
+      text-transform: uppercase;
+      margin: 0;
+    }
+
+    .clinic-subtitle {
+      font-size: 9pt;
+      color: #B0307E;
+      margin: 2px 0 0;
+    }
+
+    .doc-title {
+      text-align: right;
+    }
+
+    .doc-title h1 {
+      margin: 0;
+      font-size: 12pt;
+      color: #15202b;
+    }
+
+    .doc-title p {
+      margin: 2px 0 0;
+      font-size: 8pt;
+      color: #5b6b7c;
+    }
+
+    .meta {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px 16px;
+      margin-bottom: 14px;
+      padding: 10px 12px;
+      border: 1px solid #e2ebf0;
+      border-radius: 8px;
+      background: #f8fbfc;
+    }
+
+    .meta .label {
+      font-size: 7.5pt;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: #5b6b7c;
+      margin: 0 0 2px;
+    }
+
+    .meta .value {
+      font-size: 10pt;
+      font-weight: 600;
+      margin: 0;
+    }
+
+    .panel {
+      margin-bottom: 16px;
+      page-break-inside: avoid;
+    }
+
+    .panel-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .panel-title {
+      margin: 0;
+      font-size: 9.5pt;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: #E540AE;
+      border-left: 3px solid #20D0DF;
+      padding-left: 8px;
+    }
+
+    .panel-method {
+      font-size: 7.5pt;
+      color: #5b6b7c;
+      text-align: right;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 8.5pt;
+    }
+
+    th {
+      background: #fce8f4;
+      color: #B0307E;
+      font-weight: 700;
+      text-align: left;
+      border: 1px solid #e2ebf0;
+      padding: 5px 6px;
+    }
+
+    td {
+      border: 1px solid #e2ebf0;
+      padding: 5px 6px;
+      vertical-align: top;
+    }
+
+    .section-row td {
+      background: #e8fafb;
+      font-weight: 700;
+      color: #15202b;
+    }
+
+    .result-value {
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .muted {
+      color: #5b6b7c;
+    }
+
+    .ref {
+      white-space: pre-line;
+    }
+
+    .panel-notes {
+      margin: 4px 0 0;
+      font-size: 8pt;
+      color: #5b6b7c;
+      font-style: italic;
+    }
+
+    .general-notes {
+      margin: 12px 0;
+      padding: 10px;
+      border: 1px dashed #e2ebf0;
+      border-radius: 8px;
+    }
+
+    .general-notes .label {
+      font-size: 7.5pt;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: #E540AE;
+      margin: 0 0 4px;
+    }
+
+    .general-notes p {
+      margin: 0;
+      font-size: 9pt;
+      white-space: pre-wrap;
+    }
+
+    .footer {
+      margin-top: 28px;
+      padding-top: 12px;
+      border-top: 1px solid #e2ebf0;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 16px;
+      font-size: 7.5pt;
+      color: #5b6b7c;
+    }
+
+    .signature-block {
+      text-align: center;
+      min-width: 200px;
+      margin-left: auto;
+    }
+
+    .signature-line {
+      border-top: 1.5px solid #15202b;
+      width: 180px;
+      margin: 40px auto 6px;
+    }
+
+    .signature-img {
+      display: block;
+      height: 56px;
+      width: auto;
+      max-width: 200px;
+      margin: 8px auto 4px;
+      object-fit: contain;
+    }
+
+    .signature-block .doctor-name {
+      margin: 0;
+      font-size: 10pt;
+      font-weight: 700;
+      color: #15202b;
+    }
+
+    .signature-block .doctor-meta {
+      margin: 2px 0 0;
+      font-size: 8.5pt;
+      color: #5b6b7c;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="header-left">
+      {{#if logoPath}}
+      <img class="logo" src="{{logoPath}}" alt="RISE" />
+      {{/if}}
+      <div>
+        <p class="clinic-name">RISE</p>
+        <p class="clinic-subtitle">Servicios Médicos</p>
+      </div>
+    </div>
+    <div class="doc-title">
+      <h1>Resultados de laboratorio</h1>
+    </div>
+  </div>
+
+  <div class="meta">
+    <div>
+      <p class="label">Paciente</p>
+      <p class="value">{{patientName}}</p>
+    </div>
+    <div>
+      <p class="label">Fecha del estudio</p>
+      <p class="value">{{studyDateLabel}}</p>
+    </div>
+    <div style="grid-column: 1 / -1;">
+      <p class="label">Edad / sexo</p>
+      <p class="value">{{ageGender}}</p>
+    </div>
+  </div>
+
+  {{#each panels}}
+  <div class="panel">
+    <div class="panel-head">
+      <h2 class="panel-title">{{title}}</h2>
+      {{#if method}}<span class="panel-method">{{method}}</span>{{/if}}
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Análisis</th>
+          <th>Resultado</th>
+          <th>Unidad</th>
+          {{#if hasStatus}}<th>Estatus</th>{{/if}}
+          <th>Referencia</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each blocks}}
+          {{#if section}}
+          <tr class="section-row">
+            <td colspan="{{../colspan}}">{{section}}</td>
+          </tr>
+          {{/if}}
+          {{#each rows}}
+          <tr>
+            <td>{{name}}</td>
+            <td class="result-value">{{value}}</td>
+            <td class="muted">{{unit}}</td>
+            {{#if ../../hasStatus}}
+            <td class="muted">{{status}}</td>
+            {{/if}}
+            <td class="muted ref">{{reference}}</td>
+          </tr>
+          {{/each}}
+        {{/each}}
+      </tbody>
+    </table>
+
+    {{#if notes}}
+    <p class="panel-notes">Nota: {{notes}}</p>
+    {{/if}}
+  </div>
+  {{/each}}
+
+  {{#if generalNotes}}
+  <div class="general-notes">
+    <p class="label">Notas generales</p>
+    <p>{{generalNotes}}</p>
+  </div>
+  {{/if}}
+
+  <div class="footer">
+    <div></div>
+    <div class="signature-block">
+      {{#if staffSignatureDataUrl}}
+      <img class="signature-img" src="{{staffSignatureDataUrl}}" alt="Firma" />
+      {{else}}
+      <div class="signature-line"></div>
+      {{/if}}
+      <p class="doctor-name">{{staffName}}</p>
+      {{#if staffCedula}}
+      <p class="doctor-meta">Cédula: {{staffCedula}}</p>
+      {{/if}}
+      <p class="doctor-meta">Firma del médico</p>
+    </div>
+  </div>
+</body>
+</html>

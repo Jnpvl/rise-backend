@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Seguimiento Podológico</title>
+  <style>
+    @page {
+      size: A4 portrait;
+      margin: 10mm;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 9.5pt;
+      color: #15202b;
+      line-height: 1.35;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 2px solid #E540AE;
+      padding-bottom: 10px;
+      margin-bottom: 12px;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo {
+      height: 64px;
+      width: auto;
+    }
+
+    .clinic-name {
+      font-size: 16pt;
+      font-weight: 700;
+      color: #E540AE;
+      text-transform: uppercase;
+      margin: 0;
+    }
+
+    .clinic-subtitle {
+      font-size: 10pt;
+      color: #B0307E;
+      margin: 2px 0 0;
+    }
+
+    .doc-title {
+      text-align: right;
+    }
+
+    .doc-title h1 {
+      margin: 0;
+      font-size: 13pt;
+      color: #15202b;
+    }
+
+    .doc-title p {
+      margin: 2px 0 0;
+      font-size: 9pt;
+      color: #5b6b7c;
+    }
+
+    .meta {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px 16px;
+      margin-bottom: 12px;
+      padding: 10px;
+      border: 1px solid #e2ebf0;
+      border-radius: 8px;
+      background: #f8fbfc;
+    }
+
+    .meta .label {
+      font-size: 8pt;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: #5b6b7c;
+    }
+
+    .meta .value {
+      font-size: 10pt;
+      font-weight: 600;
+    }
+
+    .section {
+      margin-bottom: 11px;
+      page-break-inside: avoid;
+    }
+
+    .section-title {
+      font-size: 9.5pt;
+      font-weight: 700;
+      color: #E540AE;
+      text-transform: uppercase;
+      border-left: 3px solid #20D0DF;
+      padding-left: 8px;
+      margin: 0 0 6px;
+    }
+
+    .box {
+      border: 1px solid #e2ebf0;
+      border-radius: 6px;
+      padding: 8px 10px;
+      min-height: 28px;
+      white-space: pre-wrap;
+    }
+
+    table.conditions {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 8.5pt;
+    }
+
+    table.conditions th,
+    table.conditions td {
+      border: 1px solid #d7e2e8;
+      padding: 3px 5px;
+      text-align: left;
+    }
+
+    table.conditions th {
+      background: #fce7f5;
+      color: #B0307E;
+      font-size: 8pt;
+      text-transform: uppercase;
+    }
+
+    table.conditions .mark {
+      text-align: center;
+      width: 36px;
+      font-weight: 700;
+      color: #14b8c7;
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .diagram,
+    .signature img {
+      max-width: 100%;
+      height: auto;
+      border: 1px solid #e2ebf0;
+      border-radius: 6px;
+      background: #fff;
+    }
+
+    .diagram {
+      max-height: 280px;
+      object-fit: contain;
+      display: block;
+      margin: 0 auto;
+    }
+
+    .signature {
+      text-align: center;
+    }
+
+    .signature img {
+      max-height: 90px;
+      display: block;
+      margin: 0 auto 4px;
+    }
+
+    .signature .caption {
+      font-size: 8pt;
+      color: #5b6b7c;
+      border-top: 1px solid #E540AE;
+      padding-top: 4px;
+      margin-top: 4px;
+    }
+
+    .consent {
+      font-size: 8pt;
+      color: #5b6b7c;
+      font-style: italic;
+      border: 1px dashed #e2ebf0;
+      border-radius: 6px;
+      padding: 8px;
+    }
+
+    .footer {
+      margin-top: 14px;
+      padding-top: 8px;
+      border-top: 1px solid #e2ebf0;
+      display: flex;
+      justify-content: space-between;
+      font-size: 8pt;
+      color: #5b6b7c;
+    }
+
+    .muted {
+      color: #5b6b7c;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="header-left">
+      {{#if logoPath}}
+      <img class="logo" src="{{logoPath}}" alt="RISE" />
+      {{/if}}
+      <div>
+        <p class="clinic-name">RISE</p>
+        <p class="clinic-subtitle">Servicios Médicos</p>
+      </div>
+    </div>
+    <div class="doc-title">
+      <h1>Seguimiento podológico</h1>
+      <p>Hoja clínica · No es receta médica</p>
+    </div>
+  </div>
+
+  <div class="meta">
+    <div>
+      <div class="label">Paciente</div>
+      <div class="value">{{patientName}}</div>
+    </div>
+    <div>
+      <div class="label">Fecha de seguimiento</div>
+      <div class="value">{{followUpDate}}</div>
+    </div>
+    <div>
+      <div class="label">Podólogo / profesional</div>
+      <div class="value">{{staffName}}</div>
+    </div>
+    <div>
+      <div class="label">Cédula</div>
+      <div class="value">{{staffCedula}}</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2 class="section-title">Observaciones iniciales</h2>
+    <div class="box">{{#if initialObservations}}{{initialObservations}}{{else}}<span class="muted">Sin observaciones</span>{{/if}}</div>
+  </div>
+
+  <div class="section">
+    <h2 class="section-title">Padecimientos</h2>
+    {{#if conditions.length}}
+    <table class="conditions">
+      <thead>
+        <tr>
+          <th>Padecimiento</th>
+          <th class="mark">Izq</th>
+          <th class="mark">Der</th>
+          <th>Padecimiento</th>
+          <th class="mark">Izq</th>
+          <th class="mark">Der</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each conditionRows}}
+        <tr>
+          <td>{{leftLabel}}</td>
+          <td class="mark">{{leftLeft}}</td>
+          <td class="mark">{{leftRight}}</td>
+          <td>{{rightLabel}}</td>
+          <td class="mark">{{rightLeft}}</td>
+          <td class="mark">{{rightRight}}</td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+    {{else}}
+    <div class="box muted">Sin padecimientos marcados</div>
+    {{/if}}
+  </div>
+
+  <div class="section two-col">
+    <div>
+      <h2 class="section-title">Tipo de pie derecho</h2>
+      <div class="box">{{footTypeRight}}</div>
+    </div>
+    <div>
+      <h2 class="section-title">Tipo de pie izquierdo</h2>
+      <div class="box">{{footTypeLeft}}</div>
+    </div>
+  </div>
+
+  {{#if feetDiagramDataUrl}}
+  <div class="section">
+    <h2 class="section-title">Diagrama de pies</h2>
+    <img class="diagram" src="{{feetDiagramDataUrl}}" alt="Diagrama de pies" />
+  </div>
+  {{/if}}
+
+  <div class="section">
+    <h2 class="section-title">Exploración</h2>
+    <div class="box">{{#if explorationNotes}}{{explorationNotes}}{{else}}<span class="muted">Sin notas</span>{{/if}}</div>
+  </div>
+
+  <div class="section">
+    <h2 class="section-title">Referencia</h2>
+    <div class="box">{{referralText}}</div>
+  </div>
+
+  <div class="section">
+    <h2 class="section-title">Terapéutica</h2>
+    <div class="box">{{#if therapeutics}}{{therapeutics}}{{else}}<span class="muted">Sin registro</span>{{/if}}</div>
+  </div>
+
+  <div class="section">
+    <h2 class="section-title">Tratamiento</h2>
+    <div class="box">{{#if treatment}}{{treatment}}{{else}}<span class="muted">Sin registro</span>{{/if}}</div>
+  </div>
+
+  {{#if consentAccepted}}
+  <div class="section">
+    <h2 class="section-title">Consentimiento</h2>
+    <div class="consent">{{consentText}}</div>
+  </div>
+  {{/if}}
+
+  <div class="section two-col">
+    <div class="signature">
+      {{#if patientSignatureDataUrl}}
+      <img src="{{patientSignatureDataUrl}}" alt="Firma del paciente" />
+      {{else}}
+      <div class="box muted" style="min-height:70px;">Sin firma</div>
+      {{/if}}
+      <div class="caption">Firma del paciente</div>
+    </div>
+    <div class="signature">
+      {{#if podologistSignatureDataUrl}}
+      <img src="{{podologistSignatureDataUrl}}" alt="Firma del podólogo" />
+      {{else}}
+      <div class="box muted" style="min-height:70px;">Sin firma</div>
+      {{/if}}
+      <div class="caption">Firma del podólogo</div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div>Generado: {{generatedAt}}</div>
+    <div>RISE · Servicios Médicos</div>
+  </div>
+</body>
+</html>
