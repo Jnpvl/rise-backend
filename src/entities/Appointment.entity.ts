@@ -49,9 +49,9 @@ export class Appointment {
   @Column({ type: "varchar", length: 36, nullable: true })
   consultationId?: string;
 
-  @CreateDateColumn({ type: "datetime" })
+  @CreateDateColumn({ type: "timestamptz" })
   createdAt!: Date;
 
-  @UpdateDateColumn({ type: "datetime" })
+  @UpdateDateColumn({ type: "timestamptz" })
   updatedAt!: Date;
 }

@@ -29,15 +29,15 @@ export class Staff {
   cedula!: string;
 
   /** Firma manuscrita en base64 (data URL) para documentos PDF */
-  @Column({ type: "longtext", nullable: true })
+  @Column({ type: "text", nullable: true })
   signatureDataUrl?: string;
 
   @Column({ default: true })
   isActive!: boolean;
 
-  @CreateDateColumn({ type: "datetime" })
+  @CreateDateColumn({ type: "timestamptz" })
   createdAt!: Date;
 
-  @UpdateDateColumn({ type: "datetime" })
+  @UpdateDateColumn({ type: "timestamptz" })
   updatedAt!: Date;
 }

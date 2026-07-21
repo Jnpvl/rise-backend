@@ -17,14 +17,14 @@ export class LabResult {
   id!: string;
 
   @Index()
-  @Column({ type: "varchar", length: 36 })
+  @Column({ type: "uuid" })
   patientId!: string;
 
   @ManyToOne(() => Patient)
   @JoinColumn({ name: "patientId" })
   patient!: Patient;
 
-  @Column({ type: "varchar", length: 36 })
+  @Column({ type: "uuid" })
   createdById!: string;
 
   @ManyToOne(() => Staff)
@@ -38,12 +38,12 @@ export class LabResult {
   generalNotes?: string;
 
   /** Panels + rows payload as JSON string */
-  @Column({ type: "longtext" })
+  @Column({ type: "text" })
   panels!: string;
 
-  @CreateDateColumn({ type: "datetime" })
+  @CreateDateColumn({ type: "timestamptz" })
   createdAt!: Date;
 
-  @UpdateDateColumn({ type: "datetime" })
+  @UpdateDateColumn({ type: "timestamptz" })
   updatedAt!: Date;
 }

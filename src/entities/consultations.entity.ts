@@ -14,7 +14,7 @@ export class Consultation {
   @PrimaryGeneratedColumn("uuid")
   id!: string;
 
-  @Column({ type: "varchar", length: 36 })
+  @Column({ type: "uuid" })
   patientId!: string;
 
   @ManyToOne(() => Patient)
@@ -33,10 +33,10 @@ export class Consultation {
   templateKey!: string;
 
   /** Template-specific payload (e.g. podology follow-up form) as JSON string */
-  @Column({ type: "longtext", nullable: true })
+  @Column({ type: "text", nullable: true })
   specialtyData?: string;
 
-  @CreateDateColumn({ type: "datetime" })
+  @CreateDateColumn({ type: "timestamptz" })
   consultationDate!: Date;
 
   @Column({ type: "text" })
@@ -90,7 +90,7 @@ export class Consultation {
   @Column({ type: "text", nullable: true })
   requestedStudies?: string;
 
-  @Column({ type: "datetime", nullable: true })
+  @Column({ type: "timestamptz", nullable: true })
   nextAppointment?: Date;
 
   @Column({ type: "text", nullable: true })
@@ -99,6 +99,6 @@ export class Consultation {
   @Column({ type: "text", nullable: true })
   attachedDocuments?: string;
 
-  @UpdateDateColumn({ type: "datetime" })
+  @UpdateDateColumn({ type: "timestamptz" })
   updatedAt!: Date;
 }

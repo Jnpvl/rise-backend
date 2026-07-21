@@ -26,9 +26,9 @@ export class ClinicSettings {
   @Column({ type: "varchar", length: 500, default: "" })
   facebookUrl!: string;
 
-  @CreateDateColumn({ type: "datetime" })
+  @CreateDateColumn({ type: "timestamptz" })
   createdAt!: Date;
 
-  @UpdateDateColumn({ type: "datetime" })
+  @UpdateDateColumn({ type: "timestamptz" })
   updatedAt!: Date;
 }

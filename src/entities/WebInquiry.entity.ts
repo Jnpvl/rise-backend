@@ -30,7 +30,7 @@ export class WebInquiry {
   @Column({ type: "varchar", length: 150, nullable: true })
   email!: string | null;
 
-  @Column({ type: "datetime", nullable: true })
+  @Column({ type: "timestamptz", nullable: true })
   preferredDate!: Date | null;
 
   @Column({ type: "text", nullable: true })
@@ -42,9 +42,9 @@ export class WebInquiry {
   @Column({ type: "varchar", length: 20, default: "pending" })
   status!: WebInquiryStatus;
 
-  @CreateDateColumn({ type: "datetime" })
+  @CreateDateColumn({ type: "timestamptz" })
   createdAt!: Date;
 
-  @UpdateDateColumn({ type: "datetime" })
+  @UpdateDateColumn({ type: "timestamptz" })
   updatedAt!: Date;
 }
