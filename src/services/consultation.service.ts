@@ -1,12 +1,12 @@
 import fs from "fs";
 import path from "path";
-import puppeteer from "puppeteer";
 import Handlebars from "handlebars";
 import { AppDataSource } from "../config/database";
 import { Consultation } from "../entities/consultations.entity";
 import { Patient } from "../entities/Patient.entity";
 import { Staff } from "../entities/Staff.entity";
 import { AppError } from "../utils/app-error";
+import { renderHtmlToPdf } from "../utils/pdf";
 import { appointmentService } from "./appointment.service";
 
 type AuthUser = { id: string; role: string };
@@ -176,27 +176,6 @@ function formatFollowUpDate(value: unknown): string {
     month: "long",
     day: "numeric",
   });
-}
-
-async function renderHtmlToPdf(html: string): Promise<Buffer> {
-  const browser = await puppeteer.launch({
-    headless: true,
-    args: ["--no-sandbox", "--disable-setuid-sandbox"],
-  });
-
-  try {
-    const page = await browser.newPage();
-    await page.setContent(html, { waitUntil: "load" });
-    return Buffer.from(
-      await page.pdf({
-        format: "A4",
-        landscape: false,
-        printBackground: true,
-      })
-    );
-  } finally {
-    await browser.close();
-  }
 }
 
 export class ConsultationService {
