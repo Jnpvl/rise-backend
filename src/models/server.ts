@@ -4,7 +4,7 @@ import path from "path";
 import cors from "cors";
 import { initializeDatabases } from "../config/database";
 import morgan from "morgan";
-import { uploadsDir } from "../utils/uploads-path";
+import { uploadsDir, ensureUploadsDir } from "../utils/uploads-path";
 
 class Server {
     public app: Application;
@@ -29,6 +29,7 @@ class Server {
     }
 
     config(): void {
+        ensureUploadsDir();
         this.app.use(morgan("dev"));
         this.app.use(
             cors({

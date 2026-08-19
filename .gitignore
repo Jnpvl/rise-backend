@@ -41,6 +41,7 @@ testem.log
 .DS_Store
 Thumbs.db
 
-.envuploads/
 .env
-uploads/
+public/uploads/*
+!public/uploads/.gitkeep
+/uploads/

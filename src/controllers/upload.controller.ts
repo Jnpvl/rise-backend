@@ -3,11 +3,7 @@ import { RequestHandler } from "express";
 import { handleControllerError } from "../utils/controller.utils";
 import { routeParam } from "../utils/params.utils";
 import { AppError } from "../utils/app-error";
-import {
-  deletePatientFile,
-  isRemoteStorageEnabled,
-  savePatientFile,
-} from "../services/storage.service";
+import { deletePatientFile, savePatientFile } from "../services/storage.service";
 
 function safePatientId(raw: string): string {
   const clean = raw.replace(/[^a-zA-Z0-9_-]/g, "");
@@ -47,7 +43,6 @@ export const uploadFile: RequestHandler = async (req, res) => {
       mimeType: req.file.mimetype,
       size: req.file.size,
       fileUrl: absoluteUrl,
-      storage: isRemoteStorageEnabled() ? "supabase" : "local",
     });
   } catch (err) {
     handleControllerError(res, err, "Error al subir archivo");

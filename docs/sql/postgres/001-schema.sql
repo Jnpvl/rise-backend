@@ -1,5 +1,5 @@
--- Servicios Médicos RISE — esquema PostgreSQL (Supabase)
--- Ejecutar en SQL Editor del proyecto Supabase (todo el archivo).
+-- Servicios Médicos RISE — esquema PostgreSQL
+-- Ejecutar en pgAdmin Query Tool o psql (todo el archivo).
 -- Nombres de tablas/columnas alineados con las entidades TypeORM (camelCase).
 
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";

@@ -1,25 +1,28 @@
-import puppeteer from "puppeteer";
-import chromium from "@sparticuz/chromium";
+import puppeteer, { type LaunchOptions } from "puppeteer";
 
-function isRenderRuntime(): boolean {
-  return process.env.RENDER === "true" || Boolean(process.env.RENDER_SERVICE_ID);
+const LAUNCH_ARGS = [
+  "--no-sandbox",
+  "--disable-setuid-sandbox",
+  "--disable-dev-shm-usage",
+  "--disable-gpu",
+];
+
+function buildLaunchOptions(): LaunchOptions {
+  const options: LaunchOptions = {
+    headless: true,
+    args: LAUNCH_ARGS,
+  };
+
+  const executablePath = process.env.PUPPETEER_EXECUTABLE_PATH?.trim();
+  if (executablePath) {
+    options.executablePath = executablePath;
+  }
+
+  return options;
 }
 
 export async function renderHtmlToPdf(html: string): Promise<Buffer> {
-  const onRender = isRenderRuntime();
-
-  const browser = await puppeteer.launch({
-    args: onRender
-      ? chromium.args
-      : [
-          "--no-sandbox",
-          "--disable-setuid-sandbox",
-          "--disable-dev-shm-usage",
-          "--disable-gpu",
-        ],
-    executablePath: onRender ? await chromium.executablePath() : undefined,
-    headless: true,
-  });
+  const browser = await puppeteer.launch(buildLaunchOptions());
 
   try {
     const page = await browser.newPage();

@@ -10,6 +10,13 @@ import { LabResult } from "../entities/LabResult.entity";
 
 dotenv.config();
 
+/** Off by default (Postgres local). Set DB_SSL=true only if the server requires SSL. */
+const dbSsl =
+  process.env.DB_SSL === "true" ? { rejectUnauthorized: false } : false;
+
+/** Off by default — use docs/sql/postgres/001-schema.sql for the schema. */
+const dbSync = process.env.DB_SYNC === "true";
+
 export const AppDataSource = new DataSource({
   type: "postgres",
   host: process.env.DB_HOST || "localhost",
@@ -17,11 +24,8 @@ export const AppDataSource = new DataSource({
   username: process.env.DB_USER || "postgres",
   password: process.env.DB_PASSWORD || "",
   database: process.env.DB_NAME || "postgres",
-  ssl:
-    process.env.DB_SSL === "true"
-      ? { rejectUnauthorized: false }
-      : false,
-  synchronize: process.env.DB_SYNC === "true",
+  ssl: dbSsl,
+  synchronize: dbSync,
   entities: [
     Staff,
     Patient,

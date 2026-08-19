@@ -1,11 +1,11 @@
 # Servicios Médicos RISE — Backend
 
-API Express + TypeORM + PostgreSQL (Supabase) para el panel clínico y el sitio público.
+API Express + TypeORM + PostgreSQL para el panel clínico y el sitio público.
 
 ## Requisitos
 
 - Node.js 20+
-- PostgreSQL (Supabase u otra instancia)
+- PostgreSQL (local o en red)
 
 ## Arranque
 
@@ -29,14 +29,15 @@ Ver `.env.example`.
 | Variable | Uso |
 |----------|-----|
 | `DB_*` | Conexión PostgreSQL |
-| `DB_SSL` | `true` para Supabase |
-| `DB_SYNC` | `true` solo si quieres que TypeORM cree/altere tablas |
-| `SUPABASE_URL` | Project URL (Storage) |
-| `SUPABASE_SERVICE_ROLE_KEY` | `service_role` para subir/borrar adjuntos |
-| `SUPABASE_STORAGE_BUCKET` | Bucket (`rise-uploads`) |
 | `PORT` | Puerto HTTP (default `3000`) |
 | `JWT_SECRET` | Firma de tokens del staff |
 | `MAIL_*` | SMTP Gmail para notificar solicitudes web |
+
+Opcional (por defecto no hace falta): `DB_SSL=true` si Postgres exige SSL; `DB_SYNC=true` solo en desarrollo para que TypeORM cree tablas solo.
+
+Los adjuntos de pacientes se guardan en `public/uploads/` (URL `/uploads/...`). Esa carpeta está **fuera de `dist/`**, así que actualizar el build no borra los archivos.
+
+En producción puedes fijar una ruta absoluta con `UPLOADS_DIR` (ej. `/var/lib/servicios-medicos/uploads`) para separar datos del código desplegado.
 
 ### Correo (ya implementado)
 
