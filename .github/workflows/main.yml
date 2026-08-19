@@ -1,0 +1,149 @@
+name: Deploy Rise Backend
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: Build backend
+    runs-on: ubuntu-latest
+    environment: rise-backend
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build project
+        run: npm run build
+
+      - name: Prepare release
+        shell: bash
+        env:
+          DB_HOST: ${{ vars.DB_HOST }}
+          DB_PORT: ${{ vars.DB_PORT }}
+          DB_USER: ${{ vars.DB_USER }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DB_NAME: ${{ vars.DB_NAME }}
+
+          PORT: ${{ vars.PORT }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+
+          MAIL_HOST: ${{ vars.MAIL_HOST }}
+          MAIL_PORT: ${{ vars.MAIL_PORT }}
+          MAIL_USER: ${{ vars.MAIL_USER }}
+          MAIL_PASS: ${{ secrets.MAIL_PASS }}
+          MAIL_TO: ${{ vars.MAIL_TO }}
+        run: |
+          mkdir -p release
+
+          cp -r dist release/dist
+          cp package.json release/package.json
+          cp package-lock.json release/package-lock.json
+
+          cat > release/.env <<EOF
+          DB_HOST=$DB_HOST
+          DB_PORT=$DB_PORT
+          DB_USER=$DB_USER
+          DB_PASSWORD=$DB_PASSWORD
+          DB_NAME=$DB_NAME
+
+          PORT=$PORT
+          JWT_SECRET=$JWT_SECRET
+
+          MAIL_HOST=$MAIL_HOST
+          MAIL_PORT=$MAIL_PORT
+          MAIL_USER=$MAIL_USER
+          MAIL_PASS=$MAIL_PASS
+          MAIL_TO=$MAIL_TO
+          EOF
+
+      - name: Upload release artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: rise-release
+          path: release
+          include-hidden-files: true
+          retention-days: 3
+
+  deploy:
+    name: Copy release to VM
+    needs: build
+
+    runs-on:
+      - self-hosted
+      - Windows
+      - X64
+
+    steps:
+      - name: Clean staging folder
+        shell: powershell
+        run: |
+          New-Item -ItemType Directory -Force -Path "C:\deploy\rise" | Out-Null
+
+          Remove-Item "C:\deploy\rise\*" `
+            -Recurse `
+            -Force `
+            -ErrorAction SilentlyContinue
+
+          Remove-Item "C:\deploy\rise\.env" `
+            -Force `
+            -ErrorAction SilentlyContinue
+
+      - name: Download release
+        uses: actions/download-artifact@v4
+        with:
+          name: rise-release
+          path: C:\deploy\rise
+
+      - name: Copy release to application folder
+        shell: powershell
+        run: |
+          $AppPath = "C:\apps\rise"
+          $ReleasePath = "C:\deploy\rise"
+
+          New-Item -ItemType Directory -Force -Path $AppPath | Out-Null
+
+          Remove-Item "$AppPath\dist" `
+            -Recurse `
+            -Force `
+            -ErrorAction SilentlyContinue
+
+          Copy-Item "$ReleasePath\dist" `
+            "$AppPath\dist" `
+            -Recurse `
+            -Force
+
+          Copy-Item "$ReleasePath\package.json" `
+            "$AppPath\package.json" `
+            -Force
+
+          Copy-Item "$ReleasePath\package-lock.json" `
+            "$AppPath\package-lock.json" `
+            -Force
+
+          Copy-Item "$ReleasePath\.env" `
+            "$AppPath\.env" `
+            -Force
+
+      - name: Install production dependencies
+        shell: powershell
+        working-directory: C:\apps\rise
+        run: |
+          npm ci --omit=dev
+
+      - name: Deployment complete
+        shell: powershell
+        run: |
+          Write-Host "Release copiado correctamente a C:\apps\rise"
+          Write-Host "PM2 no fue modificado."
