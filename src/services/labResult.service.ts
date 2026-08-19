@@ -7,6 +7,7 @@ import { Patient } from "../entities/Patient.entity";
 import { Staff } from "../entities/Staff.entity";
 import { AppError } from "../utils/app-error";
 import { renderHtmlToPdf } from "../utils/pdf";
+import { imageToBase64 } from "../utils/image.utils";
 
 export type LabResultRowInput = {
   id?: string;
@@ -121,12 +122,6 @@ function toResponse(entity: LabResult) {
   };
 }
 
-function imageToBase64(imagePath: string): string {
-  const imageBuffer = fs.readFileSync(imagePath);
-  const base64Image = imageBuffer.toString("base64");
-  const extension = path.extname(imagePath).substring(1);
-  return `data:image/${extension};base64,${base64Image}`;
-}
 
 function formatStudyDate(studyDate: string): string {
   const d = new Date(`${studyDate}T12:00:00`);
