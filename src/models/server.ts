@@ -5,6 +5,7 @@ import cors from "cors";
 import { initializeDatabases } from "../config/database";
 import morgan from "morgan";
 import { uploadsDir, ensureUploadsDir } from "../utils/uploads-path";
+import { warmupPdfEngine } from "../utils/pdf";
 
 class Server {
     public app: Application;
@@ -21,6 +22,7 @@ class Server {
         return initializeDatabases()
             .then(() => {
                 console.log("Todas las bases de datos han sido inicializadas correctamente.");
+                void warmupPdfEngine();
             })
             .catch((error) => {
                 console.error("Error conectando a las bases de datos:", error);
