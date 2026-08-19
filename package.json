@@ -8,6 +8,7 @@
     "build": "tsc && npm run copy-assets",
     "clean": "rimraf dist",
     "copy-assets": "node scripts/copy-assets.js",
+    "postinstall": "node scripts/ensure-puppeteer-browser.js",
     "build:watch": "tsc --watch"
   },
   "keywords": [],

@@ -6,6 +6,7 @@ import { Consultation } from "../entities/consultations.entity";
 import { Patient } from "../entities/Patient.entity";
 import { Staff } from "../entities/Staff.entity";
 import { AppError } from "../utils/app-error";
+import { imageToBase64 } from "../utils/image.utils";
 import { renderHtmlToPdf } from "../utils/pdf";
 import { appointmentService } from "./appointment.service";
 
@@ -97,13 +98,6 @@ function normalizeTemplatePayload(data: any) {
     additionalNotes: data.additionalNotes,
     specialtyData: serializeSpecialtyData(data.specialtyData),
   };
-}
-
-function imageToBase64(imagePath: string): string {
-  const imageBuffer = fs.readFileSync(imagePath);
-  const base64Image = imageBuffer.toString("base64");
-  const extension = path.extname(imagePath).substring(1);
-  return `data:image/${extension};base64,${base64Image}`;
 }
 
 function parseSpecialtyObject(value: unknown): Record<string, any> {
