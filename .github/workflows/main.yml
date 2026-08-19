@@ -107,29 +107,12 @@ jobs:
           path: C:\deploy\rise
 
       - name: Copy release to application folder
-        id: copy
         shell: powershell
         run: |
           $AppPath = "C:\apps\rise"
           $ReleasePath = "C:\deploy\rise"
 
           New-Item -ItemType Directory -Force -Path $AppPath | Out-Null
-          New-Item -ItemType Directory -Force -Path "$AppPath\public\uploads" | Out-Null
-
-          $needsNpmCi = "true"
-          if ((Test-Path "$AppPath\package-lock.json") -and (Test-Path "$ReleasePath\package-lock.json")) {
-            $currentHash = (Get-FileHash "$AppPath\package-lock.json" -Algorithm SHA256).Hash
-            $releaseHash = (Get-FileHash "$ReleasePath\package-lock.json" -Algorithm SHA256).Hash
-            if ($currentHash -eq $releaseHash) {
-              $needsNpmCi = "false"
-            }
-          }
-          if (-not (Test-Path "$AppPath\node_modules")) {
-            $needsNpmCi = "true"
-          }
-
-          Write-Host "needs_npm_ci=$needsNpmCi"
-          Add-Content -Path $env:GITHUB_OUTPUT -Value "needs_npm_ci=$needsNpmCi"
 
           Remove-Item "$AppPath\dist" `
             -Recurse `
@@ -154,39 +137,13 @@ jobs:
             -Force
 
       - name: Install production dependencies
-        if: steps.copy.outputs.needs_npm_ci == 'true'
         shell: powershell
         working-directory: C:\apps\rise
-        env:
-          PM2_BIN: ${{ vars.PM2_BIN }}
         run: |
-          $AppPath = "C:\apps\rise"
-
-          if ($env:PM2_BIN -and (Test-Path $env:PM2_BIN)) {
-            Write-Host "Deteniendo app con PM2_BIN: $env:PM2_BIN"
-            & $env:PM2_BIN stop all 2>$null
-            Start-Sleep -Seconds 3
-          }
-
-          Get-CimInstance Win32_Process -Filter "Name = 'node.exe'" |
-            Where-Object { $_.CommandLine -and ($_.CommandLine -like "*$AppPath*") } |
-            ForEach-Object {
-              Write-Host "Deteniendo node PID $($_.ProcessId)"
-              Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue
-            }
-
-          Start-Sleep -Seconds 5
-
           npm ci --omit=dev
-
-      - name: Skip npm install message
-        if: steps.copy.outputs.needs_npm_ci != 'true'
-        shell: powershell
-        run: |
-          Write-Host "package-lock.json sin cambios: dist y .env actualizados, npm ci omitido."
 
       - name: Deployment complete
         shell: powershell
         run: |
           Write-Host "Release copiado correctamente a C:\apps\rise"
-          Write-Host "Reinicia PM2 manualmente en el servidor si detuviste la app: pm2 restart rise"
+          Write-Host "PM2 no fue modificado."
