@@ -50,10 +50,6 @@ jobs:
           cp -r dist release/dist
           cp package.json release/package.json
           cp package-lock.json release/package-lock.json
-          mkdir -p release/public/uploads
-          if [ -f public/uploads/.gitkeep ]; then
-            cp public/uploads/.gitkeep release/public/uploads/.gitkeep
-          fi
 
           cat > release/.env <<EOF
           DB_HOST=$DB_HOST
@@ -88,9 +84,6 @@ jobs:
       - self-hosted
       - Windows
       - X64
-
-    env:
-      PM2_APP_NAME: ${{ vars.PM2_APP_NAME }}
 
     steps:
       - name: Clean staging folder
@@ -143,50 +136,14 @@ jobs:
             "$AppPath\.env" `
             -Force
 
-          New-Item -ItemType Directory -Force -Path "$AppPath\public\uploads" | Out-Null
-
-      - name: Stop application before npm install
-        shell: powershell
-        run: |
-          $appName = "$env:PM2_APP_NAME"
-          if ([string]::IsNullOrWhiteSpace($appName)) {
-            $appName = "rise"
-          }
-
-          Write-Host "Deteniendo PM2 app: $appName"
-          pm2 stop $appName 2>$null
-          Start-Sleep -Seconds 3
-
       - name: Install production dependencies
         shell: powershell
         working-directory: C:\apps\rise
         run: |
-          if (Test-Path "node_modules") {
-            Remove-Item "node_modules" -Recurse -Force -ErrorAction SilentlyContinue
-          }
-
           npm ci --omit=dev
-
-      - name: Restart application
-        shell: powershell
-        working-directory: C:\apps\rise
-        run: |
-          $appName = "$env:PM2_APP_NAME"
-          if ([string]::IsNullOrWhiteSpace($appName)) {
-            $appName = "rise"
-          }
-
-          $existing = pm2 describe $appName 2>$null
-          if ($LASTEXITCODE -eq 0) {
-            pm2 restart $appName
-          } else {
-            pm2 start dist/index.js --name $appName
-          }
-
-          pm2 save
 
       - name: Deployment complete
         shell: powershell
         run: |
           Write-Host "Release copiado correctamente a C:\apps\rise"
-          Write-Host "PM2 reiniciado."
+          Write-Host "PM2 no fue modificado."
