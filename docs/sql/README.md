@@ -6,6 +6,7 @@ Script para crear el esquema en PostgreSQL local (pgAdmin o psql).
 
 1. Crear la base de datos vacía (ej. `servicios_medicos`).
 2. Ejecutar `postgres/001-schema.sql` en Query Tool.
+3. Si la BD ya existía, aplicar también los scripts `002-*.sql` y `003-*.sql` pendientes.
 
 ## Tablas
 

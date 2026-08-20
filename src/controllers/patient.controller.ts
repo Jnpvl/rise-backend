@@ -57,3 +57,19 @@ export const getPatientById: RequestHandler = async (req, res) => {
     handleControllerError(res, err, "Error al obtener paciente");
   }
 };
+
+export const generatePatientRecord: RequestHandler = async (req, res) => {
+  try {
+    const id = routeParam(req.params.id);
+    const { buffer, filename } = await patientService.generateRecordPdf(id);
+
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader(
+      "Content-Disposition",
+      `inline; filename="${filename}"`
+    );
+    res.send(buffer);
+  } catch (err) {
+    handleControllerError(res, err, "Error al generar el expediente");
+  }
+};

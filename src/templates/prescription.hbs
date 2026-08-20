@@ -32,8 +32,9 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            opacity: 0.05;
-            width: 400px;
+            opacity: 0.06;
+            width: 420px;
+            max-width: 70%;
             z-index: 0;
             pointer-events: none;
         }
@@ -47,15 +48,21 @@
         }
 
         .header {
+            position: relative;
             display: flex;
             align-items: center;
             justify-content: center;
             border-bottom: 2px solid #E540AE;
             padding-bottom: 12px;
+            min-height: 90px;
         }
 
         .logo {
-            height: 120px;
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            height: 90px;
             width: auto;
         }
 
@@ -81,6 +88,68 @@
             color: #64748b;
             margin-top: 6px;
             line-height: 1.4;
+        }
+
+        .main-layout {
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+            margin-top: 12px;
+        }
+
+        .main-left {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .vitals-panel {
+            width: 170px;
+            flex-shrink: 0;
+            border: 1.5px solid #E540AE;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .vitals-title {
+            background: #E540AE;
+            color: #fff;
+            font-size: 9pt;
+            font-weight: bold;
+            text-align: center;
+            padding: 6px 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+
+        .vitals-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 9pt;
+        }
+
+        .vitals-table th,
+        .vitals-table td {
+            padding: 6px 8px;
+            border-bottom: 1px solid #f3d4e8;
+            text-align: left;
+        }
+
+        .vitals-table tr:last-child th,
+        .vitals-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .vitals-table th {
+            color: #B0307E;
+            font-weight: bold;
+            width: 55%;
+            background: #fdf2f8;
+        }
+
+        .vitals-table td {
+            color: #15202b;
+            text-align: right;
+            font-weight: 600;
         }
 
         .info-section {
@@ -175,9 +244,16 @@
 
 <body>
 
+    {{#if watermarkPath}}
+    <img class="watermark" src="{{watermarkPath}}" alt="" />
+    {{/if}}
+
     <div class="prescription-container">
         <!-- Encabezado -->
         <div class="header">
+            {{#if logoPath}}
+            <img class="logo" src="{{logoPath}}" alt="RISE" />
+            {{/if}}
             <div class="clinic-info">
                 <div class="clinic-name">RISE</div>
                 <div class="clinic-subtitle">Servicios Médicos</div>
@@ -189,7 +265,8 @@
         </div>
 
         <!-- Contenido -->
-        <div class="content">
+        <div class="content main-layout">
+            <div class="main-left">
             <!-- Información del paciente -->
             <div class="info-section">
                 <div class="section-title">Información del Paciente</div>
@@ -240,6 +317,23 @@
                 <div class="section-title">Próxima Cita</div>
                 <div class="field-value">{{nextAppointment}}</div>
             </div>
+            {{/if}}
+            </div>
+
+            {{#if vitalSigns.length}}
+            <aside class="vitals-panel">
+                <div class="vitals-title">Signos vitales</div>
+                <table class="vitals-table">
+                    <tbody>
+                        {{#each vitalSigns}}
+                        <tr>
+                            <th>{{label}}</th>
+                            <td>{{value}}</td>
+                        </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+            </aside>
             {{/if}}
         </div>
 

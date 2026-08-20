@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Expediente clínico</title>
+  <style>
+    @page {
+      size: A4 portrait;
+      margin: 12mm;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Times New Roman', Times, serif;
+      font-size: 10.5pt;
+      color: #15202b;
+      position: relative;
+    }
+
+    .watermark {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      opacity: 0.06;
+      width: 420px;
+      max-width: 70%;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .page {
+      position: relative;
+      z-index: 1;
+    }
+
+    .header {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-bottom: 2px solid #E540AE;
+      padding-bottom: 12px;
+      margin-bottom: 14px;
+      min-height: 80px;
+    }
+
+    .logo {
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      height: 72px;
+      width: auto;
+    }
+
+    .clinic-info { text-align: center; }
+
+    .clinic-name {
+      font-size: 18pt;
+      font-weight: bold;
+      color: #E540AE;
+      text-transform: uppercase;
+    }
+
+    .clinic-subtitle {
+      font-size: 12pt;
+      color: #B0307E;
+      margin-top: 2px;
+    }
+
+    .doc-title {
+      text-align: center;
+      font-size: 13pt;
+      font-weight: bold;
+      color: #15202b;
+      margin: 10px 0 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 9pt;
+      color: #64748b;
+      margin-bottom: 12px;
+    }
+
+    .section {
+      border-left: 4px solid #E540AE;
+      padding: 8px 10px 4px;
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      font-size: 10pt;
+      font-weight: bold;
+      color: #E540AE;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px 16px;
+    }
+
+    .field.full { grid-column: 1 / -1; }
+
+    .label {
+      font-size: 8pt;
+      font-weight: bold;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .value {
+      font-size: 10.5pt;
+      border-bottom: 1px dotted #cbd5e1;
+      padding-bottom: 2px;
+      min-height: 16px;
+      white-space: pre-wrap;
+    }
+
+    .footer {
+      margin-top: 24px;
+      padding-top: 10px;
+      border-top: 1px solid #e2e8f0;
+      font-size: 8.5pt;
+      color: #64748b;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  {{#if watermarkPath}}
+  <img class="watermark" src="{{watermarkPath}}" alt="" />
+  {{/if}}
+
+  <div class="page">
+    <div class="header">
+      {{#if logoPath}}
+      <img class="logo" src="{{logoPath}}" alt="RISE" />
+      {{/if}}
+      <div class="clinic-info">
+        <div class="clinic-name">RISE</div>
+        <div class="clinic-subtitle">Servicios Médicos</div>
+      </div>
+    </div>
+
+    <div class="doc-title">Expediente clínico del paciente</div>
+    <div class="meta">
+      <div>Impreso: {{printedAt}}</div>
+      <div>Actualizado: {{updatedAt}}</div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Información personal</div>
+      <div class="grid">
+        <div class="field full">
+          <div class="label">Nombre completo</div>
+          <div class="value">{{fullName}}</div>
+        </div>
+        <div class="field">
+          <div class="label">Fecha de nacimiento</div>
+          <div class="value">{{birthDate}}</div>
+        </div>
+        <div class="field">
+          <div class="label">Edad</div>
+          <div class="value">{{age}}</div>
+        </div>
+        <div class="field">
+          <div class="label">Género</div>
+          <div class="value">{{gender}}</div>
+        </div>
+        <div class="field">
+          <div class="label">Estado civil</div>
+          <div class="value">{{maritalStatus}}</div>
+        </div>
+        <div class="field full">
+          <div class="label">Responsable</div>
+          <div class="value">{{guardianName}}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Información de contacto</div>
+      <div class="grid">
+        <div class="field">
+          <div class="label">Teléfono</div>
+          <div class="value">{{phone}}</div>
+        </div>
+        <div class="field">
+          <div class="label">Email</div>
+          <div class="value">{{email}}</div>
+        </div>
+        <div class="field full">
+          <div class="label">Dirección</div>
+          <div class="value">{{address}}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Información profesional</div>
+      <div class="grid">
+        <div class="field">
+          <div class="label">Ocupación</div>
+          <div class="value">{{occupation}}</div>
+        </div>
+        <div class="field">
+          <div class="label">Nivel educativo</div>
+          <div class="value">{{educationLevel}}</div>
+        </div>
+        <div class="field">
+          <div class="label">CURP</div>
+          <div class="value">{{curp}}</div>
+        </div>
+        <div class="field">
+          <div class="label">Tipo de sangre</div>
+          <div class="value">{{bloodType}}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Datos físicos</div>
+      <div class="grid">
+        <div class="field">
+          <div class="label">Peso</div>
+          <div class="value">{{weight}}</div>
+        </div>
+        <div class="field">
+          <div class="label">Estatura</div>
+          <div class="value">{{height}}</div>
+        </div>
+        <div class="field">
+          <div class="label">No. de calzado</div>
+          <div class="value">{{shoeSize}}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Contacto de emergencia</div>
+      <div class="grid">
+        <div class="field">
+          <div class="label">Nombre</div>
+          <div class="value">{{emergencyContactName}}</div>
+        </div>
+        <div class="field">
+          <div class="label">Teléfono</div>
+          <div class="value">{{emergencyContactPhone}}</div>
+        </div>
+        <div class="field full">
+          <div class="label">Dirección</div>
+          <div class="value">{{emergencyContactAddress}}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Información médica</div>
+      <div class="grid">
+        <div class="field">
+          <div class="label">Alergias</div>
+          <div class="value">{{allergies}}</div>
+        </div>
+        <div class="field">
+          <div class="label">Condiciones médicas</div>
+          <div class="value">{{medicalConditions}}</div>
+        </div>
+        <div class="field">
+          <div class="label">Medicamentos actuales</div>
+          <div class="value">{{currentMedications}}</div>
+        </div>
+        <div class="field">
+          <div class="label">Patológicos</div>
+          <div class="value">{{patologicos}}</div>
+        </div>
+        <div class="field">
+          <div class="label">No patológicos</div>
+          <div class="value">{{noPatologicos}}</div>
+        </div>
+        <div class="field full">
+          <div class="label">Notas iniciales</div>
+          <div class="value">{{initialNotes}}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      Documento generado por Servicios Médicos RISE · Solo información del expediente del paciente
+    </div>
+  </div>
+</body>
+</html>

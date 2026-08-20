@@ -50,6 +50,24 @@ export class Patient {
   @Column({ type: "varchar", length: 5 })
   bloodType!: string;
 
+  @Column({ type: "decimal", precision: 5, scale: 2, nullable: true })
+  weight?: number;
+
+  @Column({ type: "decimal", precision: 5, scale: 2, nullable: true })
+  height?: number;
+
+  @Column({ type: "varchar", length: 20, nullable: true })
+  shoeSize?: string;
+
+  @Column({ type: "varchar", length: 150, nullable: true })
+  emergencyContactName?: string;
+
+  @Column({ type: "varchar", length: 20, nullable: true })
+  emergencyContactPhone?: string;
+
+  @Column({ type: "text", nullable: true })
+  emergencyContactAddress?: string;
+
   @Column({ type: "text", nullable: true })
   allergies?: string;
 

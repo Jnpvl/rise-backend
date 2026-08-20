@@ -60,6 +60,10 @@ export class Consultation {
   @Column({ type: "varchar", length: 20, nullable: true })
   oxygenSaturation?: string;
 
+  /** DxTx — glucosa capilar (consulta general) */
+  @Column({ type: "varchar", length: 20, nullable: true })
+  capillaryGlucose?: string;
+
   @Column({ type: "decimal", precision: 5, scale: 2, nullable: true })
   weight?: number;
 

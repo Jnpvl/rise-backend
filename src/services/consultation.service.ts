@@ -231,6 +231,7 @@ export class ConsultationService {
       respiratoryRate: data.respiratoryRate,
       temperature: data.temperature,
       oxygenSaturation: data.oxygenSaturation,
+      capillaryGlucose: data.capillaryGlucose,
       weight: normalizeDecimal(data.weight) ?? undefined,
       height: normalizeDecimal(data.height) ?? undefined,
       bmi: normalizeDecimal(data.bmi) ?? undefined,
@@ -437,6 +438,8 @@ export class ConsultationService {
     consultation.temperature = data.temperature ?? consultation.temperature;
     consultation.oxygenSaturation =
       data.oxygenSaturation ?? consultation.oxygenSaturation;
+    consultation.capillaryGlucose =
+      data.capillaryGlucose ?? consultation.capillaryGlucose;
     consultation.weight =
       normalizeDecimal(data.weight) ?? consultation.weight;
     consultation.height =
@@ -532,6 +535,9 @@ export class ConsultationService {
     const logoPath = imageToBase64(
       path.resolve(__dirname, "../utils/assets/logo.png")
     );
+    const watermarkPath = imageToBase64(
+      path.resolve(__dirname, "../utils/assets/logo completo sin fondo.png")
+    );
 
     const generalInstructionsHtml = new Handlebars.SafeString(
       Handlebars.escapeExpression(
@@ -544,6 +550,24 @@ export class ConsultationService {
       (consultation as any).requestStudies ||
       "Ninguna";
 
+    const vitalSigns: Array<{ label: string; value: string }> = [];
+    const pushVital = (label: string, value: unknown, suffix = "") => {
+      if (value === undefined || value === null) return;
+      const text = String(value).trim();
+      if (!text) return;
+      vitalSigns.push({ label, value: suffix ? `${text} ${suffix}` : text });
+    };
+
+    pushVital("TA", consultation.bloodPressure);
+    pushVital("FC", consultation.heartRate, "lpm");
+    pushVital("FR", consultation.respiratoryRate, "rpm");
+    pushVital("Temp.", consultation.temperature, "°C");
+    pushVital("SpO₂", consultation.oxygenSaturation, "%");
+    pushVital("DxTx", consultation.capillaryGlucose, "mg/dL");
+    pushVital("Peso", consultation.weight, "kg");
+    pushVital("Talla", consultation.height, "m");
+    pushVital("IMC", consultation.bmi);
+
     const context: any = {
       patientName: `${(patient.firstName || "").trim()} ${(patient.lastName || "").trim()}`.trim(),
       diagnosis: consultation.diagnosis || "No registrado",
@@ -551,12 +575,16 @@ export class ConsultationService {
       prescribedMedications,
       requestedStudies: requestedStudiesText,
       requestStudies: requestedStudiesText,
-      currentDate: new Date().toLocaleDateString("es-ES", {
+      vitalSigns,
+      currentDate: new Date(
+        consultation.updatedAt || consultation.consultationDate
+      ).toLocaleDateString("es-ES", {
         year: "numeric",
         month: "long",
         day: "numeric",
       }),
       logoPath,
+      watermarkPath,
       staffName,
       staffCedula,
     };
