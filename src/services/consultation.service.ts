@@ -162,9 +162,16 @@ function markSide(value: unknown): string {
 }
 
 function formatFollowUpDate(value: unknown): string {
-  if (!value || typeof value !== "string") return "No registrada";
-  const date = new Date(value.includes("T") ? value : `${value}T12:00:00`);
-  if (isNaN(date.getTime())) return value;
+  if (!value) return "No registrada";
+  const date =
+    value instanceof Date
+      ? value
+      : typeof value === "string"
+        ? new Date(value.includes("T") ? value : `${value}T12:00:00`)
+        : null;
+  if (!date || isNaN(date.getTime())) {
+    return typeof value === "string" ? value : "No registrada";
+  }
   return date.toLocaleDateString("es-MX", {
     year: "numeric",
     month: "long",
@@ -698,7 +705,7 @@ export class ConsultationService {
         `${(patient.firstName || "").trim()} ${(patient.lastName || "").trim()}`.trim() ||
         "Paciente",
       followUpDate: formatFollowUpDate(
-        specialty.followUpDate || consultation.consultationDate
+        consultation.updatedAt || consultation.consultationDate
       ),
       staffName: staff?.name || "No registrado",
       staffCedula: staff?.cedula || "No registrada",
@@ -709,7 +716,8 @@ export class ConsultationService {
         PODOLOGY_FOOT_TYPE_LABELS[specialty.footTypeRight] || "No registrado",
       footTypeLeft:
         PODOLOGY_FOOT_TYPE_LABELS[specialty.footTypeLeft] || "No registrado",
-      feetDiagramDataUrl: specialty.feetDiagramDataUrl || "",
+      dorsalDiagramDataUrl: specialty.dorsalDiagramDataUrl || "",
+      plantarDiagramDataUrl: specialty.plantarDiagramDataUrl || "",
       explorationNotes: specialty.explorationNotes || "",
       referralText,
       therapeutics: specialty.therapeutics || "",
@@ -718,13 +726,6 @@ export class ConsultationService {
       consentText: PODOLOGY_CONSENT_TEXT,
       patientSignatureDataUrl: specialty.patientSignatureDataUrl || "",
       podologistSignatureDataUrl: specialty.podologistSignatureDataUrl || "",
-      generatedAt: new Date().toLocaleString("es-MX", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-      }),
     };
 
     const htmlPath = path.join(
