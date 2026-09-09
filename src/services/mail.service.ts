@@ -39,12 +39,17 @@ export async function sendNotificationEmail(
 
   const to =
     process.env.MAIL_TO?.trim() ||
-    process.env.MAIL_USER?.trim() ||
+    process.env.MAIL_FROM?.trim() ||
     "serviciosmedicosrise@gmail.com";
+
+  const fromAddress =
+    process.env.MAIL_FROM?.trim() ||
+    process.env.MAIL_TO?.trim() ||
+    process.env.MAIL_USER?.trim();
 
   const transporter = getTransporter();
   await transporter.sendMail({
-    from: `"RISE Web" <${process.env.MAIL_USER}>`,
+    from: fromAddress,
     to,
     subject: payload.subject,
     text: payload.text,
