@@ -32,7 +32,12 @@ export async function sendNotificationEmail(
 ): Promise<void> {
   if (!isMailConfigured()) {
     console.warn(
-      "[mail] MAIL_USER/MAIL_PASS no configurados; se omite el envío de correo"
+      "[mail] MAIL_USER/MAIL_PASS no configurados; se omite el envío de correo",
+      {
+        host: process.env.MAIL_HOST || null,
+        userSet: Boolean(process.env.MAIL_USER?.trim()),
+        passSet: Boolean(getMailPass()),
+      }
     );
     return;
   }
@@ -48,11 +53,18 @@ export async function sendNotificationEmail(
     process.env.MAIL_USER?.trim();
 
   const transporter = getTransporter();
-  await transporter.sendMail({
+  const info = await transporter.sendMail({
     from: fromAddress,
     to,
     subject: payload.subject,
     text: payload.text,
     html: payload.html,
+  });
+
+  console.log("[mail] Enviado", {
+    to,
+    from: fromAddress,
+    messageId: info.messageId,
+    response: info.response,
   });
 }
