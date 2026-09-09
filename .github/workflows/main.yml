@@ -43,6 +43,7 @@ jobs:
           MAIL_PORT: ${{ vars.MAIL_PORT }}
           MAIL_USER: ${{ vars.MAIL_USER }}
           MAIL_PASS: ${{ secrets.MAIL_PASS }}
+          MAIL_FROM: ${{ vars.MAIL_FROM }}
           MAIL_TO: ${{ vars.MAIL_TO }}
         run: |
           mkdir -p release
@@ -65,6 +66,7 @@ jobs:
           MAIL_PORT=$MAIL_PORT
           MAIL_USER=$MAIL_USER
           MAIL_PASS=$MAIL_PASS
+          MAIL_FROM=$MAIL_FROM
           MAIL_TO=$MAIL_TO
           EOF
 
