@@ -22,6 +22,20 @@ npm run build
 npm start
 ```
 
+## Despliegue a producción
+
+El workflow `.github/workflows/main.yml` se ejecuta en cada push a `main` y también se puede lanzar manualmente desde GitHub Actions con **Run workflow**. Primero corre una verificación rápida en Ubuntu (`npm ci` y `npm run build`); si el build falla, no despliega.
+
+Cuando el build pasa, el job de deploy se conecta por SSH al droplet de DigitalOcean, entra a `/var/www/rise`, ejecuta `git pull --ff-only origin main`, corre `npm ci` solo si cambió `package-lock.json` o falta `node_modules`, compila y reinicia PM2 con `pm2 restart rise --update-env`. El `.env` real vive en el servidor y el workflow no lo crea ni lo sobrescribe.
+
+Secretos requeridos en el repositorio:
+
+- `DROPLET_HOST`: IP del droplet.
+- `DROPLET_USER`: usuario SSH del droplet, actualmente `root`.
+- `DROPLET_SSH_KEY`: clave privada ed25519 autorizada para ese usuario.
+
+Al final del deploy se valida `https://api.serviciosmedicosrise.com/`: debe responder HTTP 404 con `X-Robots-Tag: noindex, nofollow`.
+
 ## Variables de entorno
 
 Ver `.env.example`.
