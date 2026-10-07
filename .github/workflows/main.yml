@@ -96,18 +96,27 @@ jobs:
         run: |
           set -euo pipefail
 
-          headers="$(curl -sI https://api.serviciosmedicosrise.com/)"
-          status="$(printf '%s\n' "$headers" | awk '/^HTTP\// { code=$2 } END { print code }')"
-          robots_header="$(printf '%s\n' "$headers" | awk 'BEGIN { IGNORECASE=1 } /^X-Robots-Tag:/ { sub(/\r$/, ""); sub(/^[^:]+:[[:space:]]*/, ""); print; exit }')"
+          url="https://api.serviciosmedicosrise.com/"
 
-          printf '%s\n' "$headers"
+          for attempt in $(seq 1 10); do
+            echo "Health check attempt ${attempt}/10..."
 
-          if [ "$status" != "404" ]; then
-            echo "Expected HTTP 404 from health check, got $status."
-            exit 1
-          fi
+            headers="$(curl -sI "$url" || true)"
+            status="$(printf '%s\n' "$headers" | awk '/^HTTP\// { code=$2 } END { print code }')"
+            robots_header="$(printf '%s\n' "$headers" | awk 'BEGIN { IGNORECASE=1 } /^X-Robots-Tag:/ { sub(/\r$/, ""); sub(/^[^:]+:[[:space:]]*/, ""); print; exit }')"
 
-          if [ "$robots_header" != "noindex, nofollow" ]; then
-            echo "Expected X-Robots-Tag: noindex, nofollow header, got: ${robots_header:-<missing>}."
-            exit 1
-          fi
+            printf '%s\n' "$headers"
+
+            if [ "$status" = "404" ] && [ "$robots_header" = "noindex, nofollow" ]; then
+              echo "Health check passed."
+              exit 0
+            fi
+
+            if [ "$attempt" -lt 10 ]; then
+              echo "Expected HTTP 404 with X-Robots-Tag: noindex, nofollow; retrying in 3 seconds."
+              sleep 3
+            fi
+          done
+
+          echo "Health check failed after 10 attempts."
+          exit 1
