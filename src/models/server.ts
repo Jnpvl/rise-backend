@@ -33,6 +33,10 @@ class Server {
     config(): void {
         ensureUploadsDir();
         this.app.use(morgan("dev"));
+        this.app.use((_req, res, next) => {
+            res.setHeader("X-Robots-Tag", "noindex, nofollow");
+            next();
+        });
         this.app.use(
             cors({
                 origin: "*",
@@ -57,7 +61,7 @@ class Server {
 
     start(): void {
         this.app.get("/", (_req, res) => {
-            res.send("El servidor está funcionando correctamente");
+            res.status(404).json({ message: "Not Found" });
         });
         this.app.listen(this.PORT, () => {
             console.log(`Server running at http://localhost:${this.PORT}`);
