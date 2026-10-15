@@ -535,6 +535,9 @@ export class ConsultationService {
     });
     const staffName = staff?.name || null;
     const staffCedula = staff?.cedula || "No registrada";
+    const staffCedulaEstatal = staff?.cedulaEstatal?.trim() || "";
+    const staffUniversidad = staff?.universidad?.trim() || "";
+    const staffPermisoEjercer = staff?.permisoEjercer?.trim() || "";
 
     const prescribedMedications = parseJsonField(
       consultation.prescribedMedications
@@ -594,6 +597,9 @@ export class ConsultationService {
       watermarkPath,
       staffName,
       staffCedula,
+      staffCedulaEstatal,
+      staffUniversidad,
+      staffPermisoEjercer,
     };
 
     if (consultation.nextAppointment) {

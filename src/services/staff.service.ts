@@ -21,6 +21,9 @@ function toPublicStaff(staff: Staff) {
     email: staff.email,
     role: staff.role,
     cedula: staff.cedula || "",
+    cedulaEstatal: staff.cedulaEstatal || "",
+    universidad: staff.universidad || "",
+    permisoEjercer: staff.permisoEjercer || "",
     signatureDataUrl: staff.signatureDataUrl || "",
     isActive: staff.isActive,
     createdAt: staff.createdAt,
@@ -37,6 +40,9 @@ export class StaffService {
     password?: string;
     role?: string;
     cedula?: string;
+    cedulaEstatal?: string;
+    universidad?: string;
+    permisoEjercer?: string;
     signatureDataUrl?: string;
   }) {
     const { name, email, password, role, cedula } = data;
@@ -58,6 +64,9 @@ export class StaffService {
       password: hashedPassword,
       role: role as any,
       cedula: cedula || undefined,
+      cedulaEstatal: data.cedulaEstatal?.trim() || undefined,
+      universidad: data.universidad?.trim() || undefined,
+      permisoEjercer: data.permisoEjercer?.trim() || undefined,
       signatureDataUrl: signatureDataUrl || undefined,
     });
     await this.staffRepo.save(staff);
@@ -98,6 +107,9 @@ export class StaffService {
         email: staff.email,
         role: staff.role,
         cedula: staff.cedula || "",
+        cedulaEstatal: staff.cedulaEstatal || "",
+        universidad: staff.universidad || "",
+        permisoEjercer: staff.permisoEjercer || "",
         signatureDataUrl: staff.signatureDataUrl || "",
       },
       token,
@@ -128,6 +140,9 @@ export class StaffService {
       role?: string;
       isActive?: boolean;
       cedula?: string;
+      cedulaEstatal?: string;
+      universidad?: string;
+      permisoEjercer?: string;
       signatureDataUrl?: string;
     }
   ) {
@@ -144,6 +159,9 @@ export class StaffService {
       !role &&
       isActive === undefined &&
       cedula === undefined &&
+      data.cedulaEstatal === undefined &&
+      data.universidad === undefined &&
+      data.permisoEjercer === undefined &&
       data.signatureDataUrl === undefined
     ) {
       throw new AppError(400, "Debe enviar al menos un campo para actualizar.");
@@ -161,6 +179,9 @@ export class StaffService {
     if (role) staff.role = role as any;
     if (isActive !== undefined) staff.isActive = isActive;
     if (cedula !== undefined) staff.cedula = cedula;
+    if (data.cedulaEstatal !== undefined) staff.cedulaEstatal = data.cedulaEstatal.trim();
+    if (data.universidad !== undefined) staff.universidad = data.universidad.trim();
+    if (data.permisoEjercer !== undefined) staff.permisoEjercer = data.permisoEjercer.trim();
     if (password) {
       staff.password = await bcrypt.hash(password, 10);
     }

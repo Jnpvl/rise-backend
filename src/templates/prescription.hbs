@@ -344,7 +344,10 @@
                 <div class="signature-line"></div>
                 <div style="margin-top: 2px;">
                     <div style="font-size: 10pt;"><strong>{{staffName}}</strong></div>
-                    <div style="font-size: 9pt;">Cédula: {{staffCedula}}</div>
+                    <div style="font-size: 9pt;">Cédula federal: {{staffCedula}}</div>
+                    {{#if staffCedulaEstatal}}<div style="font-size: 9pt;">Cédula estatal: {{staffCedulaEstatal}}</div>{{/if}}
+                    {{#if staffPermisoEjercer}}<div style="font-size: 9pt;">Permiso para ejercer: {{staffPermisoEjercer}}</div>{{/if}}
+                    {{#if staffUniversidad}}<div style="font-size: 9pt;">{{staffUniversidad}}</div>{{/if}}
                     <div style="font-size: 9pt;">Firma del Médico</div>
                 </div>
             </div>
