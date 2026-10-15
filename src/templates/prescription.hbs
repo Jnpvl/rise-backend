@@ -271,7 +271,7 @@
             <div class="info-section">
                 <div class="section-title">Información del Paciente</div>
                 <div class="field-label">Nombre</div>
-                <div class="field-value">{{patientName}}</div>
+                <div class="field-value">{{patientName}}{{#if patientBirthDate}} · Fecha de nacimiento: {{patientBirthDate}} · Edad: {{patientAge}}{{/if}}</div>
             </div>
 
             {{#if diagnosis}}

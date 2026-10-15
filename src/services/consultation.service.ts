@@ -161,6 +161,32 @@ function markSide(value: unknown): string {
   return value ? "✓" : "";
 }
 
+/** Fecha de nacimiento (DATE de Postgres: "YYYY-MM-DD" o Date) → { "dd/mm/aaaa", "N años" }. */
+function birthDateAndAge(value: unknown): { birthDate: string; age: string } | null {
+  if (!value) return null;
+  const iso =
+    value instanceof Date ? value.toISOString().slice(0, 10) : String(value).trim().slice(0, 10);
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso);
+  if (!m) return null;
+  const [y, mo, d] = [Number(m[1]), Number(m[2]), Number(m[3])];
+  const today = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "America/Hermosillo",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  })
+    .format(new Date())
+    .split("-")
+    .map(Number);
+  let years = today[0] - y;
+  if (today[1] < mo || (today[1] === mo && today[2] < d)) years -= 1;
+  if (years < 0 || years > 150) return null;
+  return {
+    birthDate: `${m[3]}/${m[2]}/${m[1]}`,
+    age: `${years} ${years === 1 ? "año" : "años"}`,
+  };
+}
+
 function formatFollowUpDate(value: unknown): string {
   if (!value) return "No registrada";
   const date =
@@ -538,6 +564,7 @@ export class ConsultationService {
     const staffCedulaEstatal = staff?.cedulaEstatal?.trim() || "";
     const staffUniversidad = staff?.universidad?.trim() || "";
     const staffPermisoEjercer = staff?.permisoEjercer?.trim() || "";
+    const patientBirth = birthDateAndAge(patient.birthDate);
 
     const prescribedMedications = parseJsonField(
       consultation.prescribedMedications
@@ -600,6 +627,8 @@ export class ConsultationService {
       staffCedulaEstatal,
       staffUniversidad,
       staffPermisoEjercer,
+      patientBirthDate: patientBirth?.birthDate || "",
+      patientAge: patientBirth?.age || "",
     };
 
     if (consultation.nextAppointment) {
